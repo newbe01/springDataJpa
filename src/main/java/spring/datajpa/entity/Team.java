@@ -1,4 +1,4 @@
-package spring.datajpa.Entity;
+package spring.datajpa.entity;
 
 import jakarta.persistence.*;
 import lombok.*;

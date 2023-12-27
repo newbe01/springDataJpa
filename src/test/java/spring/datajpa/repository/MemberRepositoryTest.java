@@ -11,8 +11,8 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
-import spring.datajpa.Entity.Member;
-import spring.datajpa.Entity.Team;
+import spring.datajpa.entity.Member;
+import spring.datajpa.entity.Team;
 import spring.datajpa.dto.MemberDto;
 
 import java.util.Arrays;
@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 @Rollback(value = false)
 @Transactional
@@ -257,4 +256,50 @@ class MemberRepositoryTest {
         assertThat(count).isEqualTo(3);
     }
 
+    @Test
+    void findMemberLazy() {
+        Team teamA = new Team("teamA");
+        Team teamB = new Team("teamB");
+        teamRepository.save(teamA);
+        teamRepository.save(teamB);
+
+        Member member1 = new Member("member1", 10, teamA);
+        Member member2 = new Member("member2", 10, teamB);
+        repository.save(member1);
+        repository.save(member2);
+
+        em.flush();
+        em.clear();
+
+        List<Member> members = repository.findEntityGraphByUsername("member1");
+//        List<Member> members = repository.findAll();
+        for (Member member : members) {
+            System.out.println("member.getUsername() = " + member.getUsername());
+            System.out.println("member.team.class = " + member.getTeam().getClass());
+            System.out.println("member.team.name = " + member.getTeam().getName());
+        }
+    }
+
+    @Test
+    void findMemberFetch() {
+        Team teamA = new Team("teamA");
+        Team teamB = new Team("teamB");
+        teamRepository.save(teamA);
+        teamRepository.save(teamB);
+
+        Member member1 = new Member("member1", 10, teamA);
+        Member member2 = new Member("member2", 10, teamB);
+        repository.save(member1);
+        repository.save(member2);
+
+        em.flush();
+        em.clear();
+
+        List<Member> members = repository.findMemberFetchJoin();
+        for (Member member : members) {
+            System.out.println("member.getUsername() = " + member.getUsername());
+            System.out.println("member.team.class = " + member.getTeam().getClass());
+            System.out.println("member.team.name = " + member.getTeam().getName());
+        }
+    }
 }

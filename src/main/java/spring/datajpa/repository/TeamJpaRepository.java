@@ -3,7 +3,7 @@ package spring.datajpa.repository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.stereotype.Repository;
-import spring.datajpa.Entity.Team;
+import spring.datajpa.entity.Team;
 
 import java.util.List;
 import java.util.Optional;
