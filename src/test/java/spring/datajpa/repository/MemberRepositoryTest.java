@@ -78,4 +78,19 @@ class MemberRepositoryTest {
         assertThat(result.get(0).getAge()).isEqualTo(15);
     }
 
+    @Test
+    void findTmpBy() {
+        List<Member> tmpBy = repository.findTopTmpBy();
+    }
+
+    @Test
+    void testNamedQuery() {
+        Member m1 = new Member("testA", 15);
+        Member m2 = new Member("testB", 10);
+        repository.save(m1);
+        repository.save(m2);
+
+        List<Member> result = repository.findByUsername("testA");
+        assertThat(result.get(0)).isEqualTo(m1);
+    }
 }
