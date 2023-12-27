@@ -11,6 +11,7 @@ import spring.datajpa.dto.MemberDto;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -151,6 +152,19 @@ class MemberRepositoryTest {
         for (Member member : result) {
             System.out.println("member = " + member);
         }
+    }
+
+    @Test
+    void returnType() {
+        Member m1 = new Member("testA", 15);
+        Member m2 = new Member("testB", 10);
+        repository.save(m1);
+        repository.save(m2);
+
+        List<Member> testA = repository.findListByUsername("testA");
+        Member testB = repository.findMemByUsername("testB");
+        Optional<Member> optionalMem = repository.findOptionalByUsername("testB");
+
     }
 
 }
