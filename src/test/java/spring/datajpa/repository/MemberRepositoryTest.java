@@ -7,6 +7,8 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 import spring.datajpa.Entity.Member;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -20,7 +22,7 @@ class MemberRepositoryTest {
 
     @Test
     void testMember() {
-
+        System.out.println("repository.getClass() = " + repository.getClass());
         Member member = new Member("username");
         Member savedMember = repository.save(member);
 
@@ -29,5 +31,38 @@ class MemberRepositoryTest {
         assertThat(savedMember.getId()).isEqualTo(findMember.getId());
         assertThat(savedMember.getUsername()).isEqualTo(findMember.getUsername());
         assertThat(savedMember).isEqualTo(findMember);
+    }
+
+    @Test
+    void basicCRUD() {
+
+        Member member1 = new Member("member1");
+        Member member2 = new Member("member2");
+
+        repository.save(member1);
+        repository.save(member2);
+
+        Member findMember1 = repository.findById(member1.getId()).get();
+        Member findMember2 = repository.findById(member2.getId()).get();
+
+        assertThat(findMember1).isEqualTo(member1);
+        assertThat(findMember2).isEqualTo(member2);
+
+        findMember1.setUsername("member!!");
+        Member updatedMember = repository.findById(member1.getId()).get();
+        assertThat(updatedMember.getUsername()).isEqualTo("member!!");
+
+        List<Member> all = repository.findAll();
+        assertThat(all.size()).isEqualTo(2);
+
+        long count = repository.count();
+        assertThat(count).isEqualTo(2);
+
+        repository.delete(member1);
+        repository.delete(member2);
+
+        long deletedCount = repository.count();
+        assertThat(deletedCount).isEqualTo(0);
+
     }
 }
