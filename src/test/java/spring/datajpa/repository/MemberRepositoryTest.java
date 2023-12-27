@@ -302,4 +302,26 @@ class MemberRepositoryTest {
             System.out.println("member.team.name = " + member.getTeam().getName());
         }
     }
+
+    @Test
+    void queryHint() {
+        Member member = new Member("member1", 10);
+        repository.save(member);
+        em.flush();
+        em.clear();
+
+//        Member findMember = repository.findById(member.getId()).get();
+        Member findMember = repository.findReadOnlyByUsername("member1");
+        findMember.setUsername("member2"); // readOnly 라서 update X
+    }
+
+    @Test
+    void lock() {
+        Member member = new Member("member1", 10);
+        repository.save(member);
+        em.flush();
+        em.clear();
+
+        List<Member> member1 = repository.findLockByUsername("member1");
+    }
 }
