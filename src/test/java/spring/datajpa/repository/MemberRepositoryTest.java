@@ -6,6 +6,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 import spring.datajpa.Entity.Member;
+import spring.datajpa.Entity.Team;
+import spring.datajpa.dto.MemberDto;
 
 import java.util.List;
 
@@ -19,6 +21,9 @@ class MemberRepositoryTest {
 
     @Autowired
     MemberRepository repository;
+
+    @Autowired
+    TeamRepository teamRepository;
 
     @Test
     void testMember() {
@@ -104,4 +109,34 @@ class MemberRepositoryTest {
         List<Member> result = repository.findUser("testA", 15);
         assertThat(result.get(0)).isEqualTo(m1);
     }
+
+    @Test
+    void findUsernameList() {
+        Member m1 = new Member("testA", 15);
+        Member m2 = new Member("testB", 10);
+        repository.save(m1);
+        repository.save(m2);
+
+        List<String> result = repository.findUsernameList();
+        for (String s : result) {
+            System.out.println("s = " + s);
+        }
+    }
+
+    @Test
+    void findMemberDto() {
+        Team team = new Team("teamA");
+        teamRepository.save(team);
+
+        Member m1 = new Member("testA", 15);
+        m1.setTeam(team);
+        repository.save(m1);
+
+
+        List<MemberDto> memberDto = repository.findMemberDto();
+        for (MemberDto dto : memberDto) {
+            System.out.println("dto = " + dto);
+        }
+    }
+
 }
