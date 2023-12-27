@@ -1,5 +1,7 @@
 package spring.datajpa.repository;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -30,6 +32,9 @@ class MemberRepositoryTest {
 
     @Autowired
     TeamRepository teamRepository;
+
+    @PersistenceContext
+    EntityManager em;
 
     @Test
     void testMember() {
@@ -227,6 +232,29 @@ class MemberRepositoryTest {
         assertThat(page.getNumber()).isEqualTo(0);
         assertThat(page.isFirst()).isTrue();
         assertThat(page.hasNext()).isTrue();
+    }
+
+
+    @Test
+    void bulkUpdate() {
+        repository.save(new Member("member1", 10));
+        repository.save(new Member("member2", 10));
+        repository.save(new Member("member3", 10));
+        repository.save(new Member("member4", 20));
+        repository.save(new Member("member5", 20));
+        repository.save(new Member("member6", 20));
+
+        int count = repository.bulkAgePlus(11);
+
+        List<Member> member5 = repository.findByUsername("member5");
+        System.out.println("member5 = " + member5.get(0)); // db에선 21 1차캐시에서는 20 clearAutomatically = true 사용시 21
+
+//        em.flush();
+//        em.clear();
+
+//        List<Member> flushMember5 = repository.findByUsername("member5");
+//        System.out.println("flushMember5.get(0) = " + flushMember5.get(0));
+        assertThat(count).isEqualTo(3);
     }
 
 }
