@@ -13,7 +13,7 @@ import lombok.*;
 )
 @NamedEntityGraph(name = "Member.all", attributeNodes = @NamedAttributeNode("team"))
 @Entity
-public class Member {
+public class Member extends BaseEntity {
 
     @Column(name = "member_id")
     @GeneratedValue
